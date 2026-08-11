@@ -54,31 +54,36 @@ function setupHeroVideo() {
   if (!hero) return;
 
   const servicesSection = document.querySelector("#servicos");
-  const existingLayer = document.querySelector(".hero-video-layer");
-  if (existingLayer) return;
+  let videoLayer = document.querySelector(".hero-video-layer");
+  let video = videoLayer?.querySelector(".hero-video");
+  const layerAlreadyExists = !!videoLayer;
 
-  const videoLayer = document.createElement("div");
-  videoLayer.className = "hero-video-layer";
-  videoLayer.setAttribute("aria-hidden", "true");
+  if (!videoLayer) {
+    videoLayer = document.createElement("div");
+    videoLayer.className = "hero-video-layer";
+    videoLayer.setAttribute("aria-hidden", "true");
 
-  const video = document.createElement("video");
-  video.className = "hero-video";
-  video.autoplay = true;
-  video.loop = true;
-  video.muted = true;
-  video.defaultMuted = true;
-  video.playsInline = true;
-  video.preload = "metadata";
-  video.disablePictureInPicture = true;
-  video.setAttribute("autoplay", "");
-  video.setAttribute("loop", "");
-  video.setAttribute("muted", "");
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("aria-hidden", "true");
-  video.src = "videobackgraund.mp4";
+    video = document.createElement("video");
+    video.className = "hero-video";
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.disablePictureInPicture = true;
+    video.setAttribute("autoplay", "");
+    video.setAttribute("loop", "");
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("aria-hidden", "true");
+  }
+
+  video.src = "/videobackgraund.mp4";
 
   const markVideoReady = () => {
+    if (!video) return;
     video.classList.add("is-ready");
     syncCoverage();
     const playAttempt = video.play();
@@ -90,14 +95,22 @@ function setupHeroVideo() {
     }
   };
 
-  video.addEventListener("loadeddata", markVideoReady, { once: true });
-  video.addEventListener("canplay", markVideoReady, { once: true });
-  video.addEventListener("error", () => {
-    videoLayer.remove();
-  });
-
-  videoLayer.append(video);
-  document.body.prepend(videoLayer);
+  if (!layerAlreadyExists) {
+    video.addEventListener("loadeddata", markVideoReady, { once: true });
+    video.addEventListener("canplay", markVideoReady, { once: true });
+    video.addEventListener("error", () => {
+      videoLayer?.remove();
+    });
+    videoLayer.append(video);
+    document.body.prepend(videoLayer);
+  } else {
+    if (video.readyState >= 2) {
+      markVideoReady();
+    } else {
+      video.addEventListener("loadeddata", markVideoReady, { once: true });
+      video.addEventListener("canplay", markVideoReady, { once: true });
+    }
+  }
 
   const syncCoverage = () => {
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
