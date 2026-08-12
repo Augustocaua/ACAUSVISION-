@@ -176,6 +176,7 @@ function setupHeroVideo() {
   source.type = "video/mp4";
   video.appendChild(source);
   video.src = "videobackgraund.mp4";
+  try { video.load(); } catch (err) {}
 
   const markVideoReady = () => {
     video.classList.add("is-ready");

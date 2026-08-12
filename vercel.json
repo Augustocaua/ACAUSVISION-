@@ -4,5 +4,15 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/acaus-landing.html", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "(.*\\.mp4)",
+      "headers": [
+        { "key": "Content-Type", "value": "video/mp4" },
+        { "key": "Cache-Control", "value": "public, max-age=2592000, immutable" },
+        { "key": "Accept-Ranges", "value": "bytes" }
+      ]
+    }
   ]
 }
