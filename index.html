@@ -17,21 +17,6 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="hero-video-layer" aria-hidden="true">
-    <video
-      class="hero-video"
-      autoplay
-      loop
-      muted
-      playsinline
-      webkit-playsinline
-      disablepictureinpicture
-      preload="auto"
-      aria-hidden="true"
-      src="/videobackgraund.mp4"
-    ></video>
-  </div>
-
   <div class="site-shell">
     <header class="site-header">
       <nav class="nav container" aria-label="navegação principal">
@@ -155,7 +140,15 @@
               </p>
             </div>
 
-            <div class="method-grid">
+            <div class="method-grid reveal" id="method-grid">
+              <div class="method-timeline" aria-hidden="true">
+                <span class="method-line"></span>
+                <span class="method-line-fill"></span>
+                <span class="method-dot" style="--dot-offset: 0%"></span>
+                <span class="method-dot" style="--dot-offset: 50%"></span>
+                <span class="method-dot" style="--dot-offset: 100%"></span>
+              </div>
+
               <article class="method-step reveal">
                 <span class="step-label">01 / diagnóstico</span>
                 <h3>clareza</h3>

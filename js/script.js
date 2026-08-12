@@ -34,6 +34,98 @@ function setupMethodStepTouch() {
 
 setupMethodStepTouch();
 
+function setupMethodTimeline() {
+  const methodSection = document.querySelector("#metodo");
+  const timeline = document.querySelector(".method-timeline");
+  const lineFill = document.querySelector(".method-line-fill");
+  const dots = document.querySelectorAll(".method-dot");
+
+  if (!methodSection || !timeline || !lineFill || !dots.length) return;
+
+  const steps = Array.from(document.querySelectorAll("#metodo .method-step"));
+  let methodRaf = 0;
+
+  const layoutDots = () => {
+    const timelineRect = timeline.getBoundingClientRect();
+    const timelineTop = timelineRect.top + window.scrollY;
+    const timelineHeight = timelineRect.height || 1;
+
+    steps.forEach((step, idx) => {
+      if (!dots[idx]) return;
+      const rect = step.getBoundingClientRect();
+      const stepCenter = rect.top + window.scrollY + rect.height / 2 - timelineTop;
+      const pct = Math.max(0, Math.min(100, (stepCenter / timelineHeight) * 100));
+      dots[idx].style.top = `${pct}%`;
+    });
+  };
+
+  const queueUpdate = () => {
+    if (methodRaf) return;
+    methodRaf = requestAnimationFrame(() => {
+      methodRaf = 0;
+      updateTimeline();
+    });
+  };
+
+  const clearCurrentSteps = () => steps.forEach(s => s.classList.remove("is-current"));
+  const markDotsLit = (upToIndex) => {
+    dots.forEach((d, i) => d.classList.toggle("is-lit", i <= upToIndex));
+  };
+
+  const updateTimeline = () => {
+    const section = methodSection.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const vhMid = vh * 0.5;
+    const start = Math.min(vh * 0.9, section.bottom - 1);
+    const end = Math.max(section.top, 40);
+    const total = start - end;
+
+    const progress = total > 0
+      ? Math.max(0, Math.min(1, (start - vhMid) / total))
+      : (vhMid <= section.top ? 0 : 1);
+
+    if (lineFill) lineFill.style.height = `${progress * 100}%`;
+
+    const litIndex = progress >= 0.97 ? steps.length - 1
+      : steps.findIndex((s, idx) => {
+          const next = steps[idx + 1];
+          const stepProgress = idx / Math.max(1, steps.length - 1);
+          const nextProgress = next ? (idx + 1) / Math.max(1, steps.length - 1) : 1;
+          return progress >= stepProgress && progress < nextProgress;
+        });
+
+    const activeIdx = litIndex < 0 ? (progress >= 0.02 ? 0 : -1) : litIndex;
+    clearCurrentSteps();
+    if (activeIdx >= 0 && steps[activeIdx]) steps[activeIdx].classList.add("is-current");
+    markDotsLit(activeIdx);
+  };
+
+  const methodObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          layoutDots();
+          queueUpdate();
+        }
+      });
+    },
+    { threshold: [0, 0.05, 0.15, 0.3, 0.5, 0.7, 0.9, 1] }
+  );
+
+  methodObserver.observe(methodSection);
+
+  window.addEventListener("scroll", queueUpdate, { passive: true });
+  window.addEventListener("resize", () => {
+    layoutDots();
+    queueUpdate();
+  }, { passive: true });
+
+  layoutDots();
+  updateTimeline();
+}
+
+setupMethodTimeline();
+
 function closeMenu() {
   body.classList.remove("nav-open");
   menuToggle?.setAttribute("aria-expanded", "false");
@@ -54,78 +146,88 @@ function setupHeroVideo() {
   if (!hero) return;
 
   const servicesSection = document.querySelector("#servicos");
-  let videoLayer = document.querySelector(".hero-video-layer");
-  let video = videoLayer?.querySelector(".hero-video");
-  const layerAlreadyExists = !!videoLayer;
 
-  if (!videoLayer) {
-    videoLayer = document.createElement("div");
-    videoLayer.className = "hero-video-layer";
-    videoLayer.setAttribute("aria-hidden", "true");
+  if (document.querySelector(".hero-video-layer")) return;
 
-    video = document.createElement("video");
-    video.className = "hero-video";
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    video.preload = "auto";
-    video.disablePictureInPicture = true;
-    video.setAttribute("autoplay", "");
-    video.setAttribute("loop", "");
-    video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("aria-hidden", "true");
-  }
+  const videoLayer = document.createElement("div");
+  videoLayer.className = "hero-video-layer";
+  videoLayer.setAttribute("aria-hidden", "true");
 
-  video.src = "/videobackgraund.mp4";
+  const video = document.createElement("video");
+  video.className = "hero-video";
+  video.autoplay = true;
+  video.loop = true;
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.disablePictureInPicture = true;
+  video.setAttribute("autoplay", "");
+  video.setAttribute("loop", "");
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("disablepictureinpicture", "");
+  video.setAttribute("aria-hidden", "true");
+  video.setAttribute("data-video-source", "hero");
+
+  const source = document.createElement("source");
+  source.src = "videobackgraund.mp4";
+  source.type = "video/mp4";
+  video.appendChild(source);
+  video.src = "videobackgraund.mp4";
 
   const markVideoReady = () => {
-    if (!video) return;
     video.classList.add("is-ready");
     syncCoverage();
-    const playAttempt = video.play();
-
-    if (playAttempt?.catch) {
-      playAttempt.catch(() => {
-        video.classList.remove("is-ready");
-      });
-    }
+    try {
+      const playAttempt = video.play();
+      if (playAttempt && typeof playAttempt.catch === "function") {
+        playAttempt.catch(() => {});
+      }
+    } catch (err) {}
   };
 
-  if (!layerAlreadyExists) {
-    video.addEventListener("loadeddata", markVideoReady, { once: true });
-    video.addEventListener("canplay", markVideoReady, { once: true });
-    video.addEventListener("error", () => {
-      videoLayer?.remove();
-    });
-    videoLayer.append(video);
-    document.body.prepend(videoLayer);
+  video.addEventListener("loadeddata", markVideoReady, { once: true });
+  video.addEventListener("canplay", markVideoReady, { once: true });
+  video.addEventListener("error", () => {
+    video.classList.remove("is-ready");
+  });
+
+  videoLayer.append(video);
+  if (document.body.firstElementChild) {
+    document.body.insertBefore(videoLayer, document.body.firstElementChild);
   } else {
-    if (video.readyState >= 2) {
-      markVideoReady();
-    } else {
-      video.addEventListener("loadeddata", markVideoReady, { once: true });
-      video.addEventListener("canplay", markVideoReady, { once: true });
-    }
+    document.body.appendChild(videoLayer);
   }
 
-  const syncCoverage = () => {
+  let rafId = 0;
+  const queueCoverageSync = () => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      syncCoverage();
+    });
+  };
+
+  function syncCoverage() {
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
     const heroRect = hero.getBoundingClientRect();
-    const servicesRect = servicesSection?.getBoundingClientRect();
+    const servicesRect = servicesSection && servicesSection.getBoundingClientRect
+      ? servicesSection.getBoundingClientRect()
+      : null;
 
     const blockTop = heroRect.top;
-    const blockBottom = servicesRect ? Math.max(heroRect.bottom, servicesRect.bottom) : heroRect.bottom;
+    const blockBottom = servicesRect
+      ? Math.max(heroRect.bottom, servicesRect.bottom)
+      : heroRect.bottom;
     const isInViewport = blockBottom > 0 && blockTop < viewportHeight;
 
     if (!isInViewport) {
       videoLayer.style.clipPath = "inset(0 0 100% 0)";
       videoLayer.classList.remove("is-active");
       if (!video.paused) {
-        video.pause();
+        try { video.pause(); } catch (err) {}
       }
       return;
     }
@@ -134,24 +236,32 @@ function setupHeroVideo() {
     const clipBottom = Math.max(0, viewportHeight - blockBottom);
     videoLayer.style.clipPath = `inset(${clipTop}px 0 ${clipBottom}px 0)`;
     videoLayer.classList.add("is-active");
-    if (video.paused) {
-      video.play().catch(() => {});
+    if (video.paused && video.readyState >= 2) {
+      try {
+        const playAttempt = video.play();
+        if (playAttempt && typeof playAttempt.catch === "function") {
+          playAttempt.catch(() => {});
+        }
+      } catch (err) {}
     }
-  };
+  }
 
   const coverageObserver = new IntersectionObserver(
-    () => syncCoverage(),
+    () => queueCoverageSync(),
     {
-      threshold: [0, 0.01, 0.25, 0.5, 0.75, 1],
-      rootMargin: "0px 0px 0px 0px"
+      threshold: [0, 0.01, 0.15, 0.3, 0.5, 0.7, 1],
+      rootMargin: "0px"
     }
   );
 
   coverageObserver.observe(hero);
   if (servicesSection) coverageObserver.observe(servicesSection);
-  window.addEventListener("scroll", syncCoverage, { passive: true });
-  window.addEventListener("resize", syncCoverage, { passive: true });
-  syncCoverage();
+  window.addEventListener("scroll", queueCoverageSync, { passive: true });
+  window.addEventListener("resize", queueCoverageSync, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") queueCoverageSync();
+  });
+  queueCoverageSync();
 }
 
 setupHeroVideo();

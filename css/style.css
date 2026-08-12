@@ -383,6 +383,22 @@ a:focus-visible {
   pointer-events: none;
 }
 
+.hero::after {
+  position: absolute;
+  top: clamp(5rem, 12vw, 10rem);
+  right: clamp(-1rem, 10vw, 5rem);
+  z-index: 0;
+  color: rgba(255, 255, 255, 0.05);
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  content: "ACAUS";
+  pointer-events: none;
+}
+
 .hero-video-layer {
   position: fixed;
   inset: 0;
@@ -436,25 +452,9 @@ a:focus-visible {
   pointer-events: none;
 }
 
-.hero::before {
-  position: absolute;
-  top: clamp(5rem, 12vw, 10rem);
-  right: clamp(-1rem, 10vw, 5rem);
-  color: rgba(255, 255, 255, 0.05);
-  font-family: var(--font-display);
-  font-size: var(--fs-hero);
-  font-weight: 700;
-  line-height: 0.86;
-  letter-spacing: -0.08em;
-  text-transform: uppercase;
-  content: "ACAUS";
-  pointer-events: none;
-}
-
-.hero::after {
+.hero-canvas::after {
   position: absolute;
   inset: auto 0 0;
-  z-index: 1;
   height: 10rem;
   background: linear-gradient(180deg, transparent, rgba(9, 9, 9, 0.45));
   content: "";
@@ -563,72 +563,6 @@ a:focus-visible {
 .hero-copy p strong {
   color: #ff6a1f;
   font-weight: 600;
-}
-
-.hero-aside {
-  position: relative;
-  display: grid;
-  align-self: stretch;
-  min-height: 17rem;
-  max-width: min(100%, 28rem);
-  padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: calc(var(--radius) + 0.5rem);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
-    linear-gradient(135deg, rgba(255, 90, 0, 0.14), transparent 55%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  overflow: hidden;
-}
-
-.hero-aside::before {
-  position: absolute;
-  inset: 1rem;
-  border-radius: calc(var(--radius) + 0.15rem);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.05), transparent 35%),
-    radial-gradient(circle at top right, rgba(255, 90, 0, 0.3), transparent 40%),
-    linear-gradient(180deg, rgba(247, 243, 237, 0.15), rgba(247, 243, 237, 0.01));
-  content: "";
-}
-
-.hero-aside::after {
-  position: absolute;
-  right: clamp(1.5rem, 4vw, 2.5rem);
-  bottom: clamp(2rem, 4vw, 3rem);
-  width: clamp(7rem, 18vw, 12rem);
-  aspect-ratio: 3 / 4;
-  border-radius: 999px 999px 1.5rem 1.5rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 30%),
-    linear-gradient(145deg, #2a211b 0%, #171311 100%);
-  content: "";
-  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.24);
-}
-
-.signal-strip {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-self: end;
-  min-height: 5.5rem;
-  margin-top: auto;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.signal-strip span {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 70%),
-    linear-gradient(135deg, rgba(255, 90, 0, 0.18), transparent 65%);
-}
-
-.signal-strip span:last-child {
-  border-right: 0;
 }
 
 .services-layout,
@@ -743,6 +677,19 @@ a:focus-visible {
   z-index: 1;
 }
 
+#metodo .method-step.is-current {
+  background: rgba(20, 12, 6, 0.5);
+  border-color: rgba(255, 109, 41, 0.22);
+}
+
+#metodo .method-step.is-current .step-label {
+  color: #ff9e68;
+}
+
+#metodo .method-step.is-current h3 {
+  color: #ff8a4a;
+}
+
 #metodo .method-step.is-active {
   border-color: rgba(255, 109, 41, 0.36);
   background: rgba(20, 12, 6, 0.55);
@@ -822,49 +769,6 @@ a:focus-visible {
   color: var(--text-secondary);
 }
 
-.architecture-space {
-  position: relative;
-  min-height: 22rem;
-  border: 1px solid var(--border-color);
-  border-radius: calc(var(--radius) + 0.75rem);
-  background:
-    linear-gradient(90deg, rgba(23, 19, 17, 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(23, 19, 17, 0.06) 1px, transparent 1px),
-    linear-gradient(145deg, #f7f2eb 0%, #efe8df 100%);
-  background-size: 4.5rem 4.5rem, 4.5rem 4.5rem, auto;
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.architecture-space::before,
-.architecture-space::after {
-  position: absolute;
-  content: "";
-}
-
-.architecture-space::before {
-  inset: 8% 8% 22%;
-  border-radius: calc(var(--radius) + 0.25rem);
-  background:
-    linear-gradient(180deg, rgba(23, 19, 17, 0.03), rgba(23, 19, 17, 0)),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.18));
-  box-shadow:
-    inset 0 0 0 1px rgba(23, 19, 17, 0.08),
-    0 24px 48px rgba(39, 29, 22, 0.08);
-}
-
-.architecture-space::after {
-  right: 12%;
-  bottom: 12%;
-  width: min(30%, 13rem);
-  aspect-ratio: 4 / 5;
-  border-radius: 999px 999px 1.25rem 1.25rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.44), transparent 28%),
-    linear-gradient(145deg, #47352a 0%, #201812 100%);
-  box-shadow: 0 20px 40px rgba(39, 29, 22, 0.16);
-}
-
 .service-list {
   display: grid;
   gap: 1px;
@@ -929,6 +833,7 @@ a:focus-visible {
 }
 
 .method-grid {
+  position: relative;
   display: grid;
   gap: 1px;
   background: var(--border-color);
@@ -937,11 +842,72 @@ a:focus-visible {
   overflow: hidden;
 }
 
+.method-timeline {
+  position: absolute;
+  top: var(--card-padding);
+  bottom: var(--card-padding);
+  left: 1.25rem;
+  width: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.method-line,
+.method-line-fill {
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 2px;
+  height: 100%;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.method-line {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.method-line-fill {
+  height: 0%;
+  background: linear-gradient(180deg, #ff8a4a 0%, #ff5a00 100%);
+  box-shadow: 0 0 18px rgba(255, 106, 31, 0.38);
+  transform-origin: top center;
+  transition: height 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: height;
+}
+
+.method-dot {
+  position: absolute;
+  left: -6px;
+  top: var(--dot-offset);
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%) scale(1);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  box-shadow: 0 0 0 4px rgba(255, 106, 31, 0.08);
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#metodo .method-step.is-current ~ .method-dot,
+.method-dot.is-lit {
+  background: linear-gradient(180deg, #ff8a4a 0%, #ff5a00 100%);
+  border-color: #ffe9db;
+  box-shadow: 0 0 0 4px rgba(255, 106, 31, 0.22), 0 0 22px rgba(255, 106, 31, 0.52);
+  transform: translateY(-50%) scale(1.08);
+}
+
 .method-step {
   display: grid;
   gap: 1rem;
   min-height: 16rem;
   padding: var(--card-padding);
+  padding-left: calc(3rem + var(--card-padding));
   background: var(--bg-surface-strong);
   transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
 }
@@ -1133,13 +1099,12 @@ a:focus-visible {
     max-width: 40rem;
   }
 
-  .architecture-space,
   .method-grid {
     grid-column: span 5;
   }
 
-  .architecture-space {
-    min-height: 28rem;
+  .method-timeline {
+    display: block;
   }
 
   .service-list {
@@ -1229,13 +1194,12 @@ a:focus-visible {
     max-width: 40rem;
   }
 
-  .architecture-space,
   .method-grid {
     grid-column: span 8;
   }
 
-  .architecture-space {
-    min-height: 34rem;
+  .method-timeline {
+    display: block;
   }
 
   .method-grid {
@@ -1273,7 +1237,7 @@ a:focus-visible {
     margin-bottom: clamp(1.25rem, 4vw, 1.75rem);
   }
 
-  .hero::before {
+  .hero::after {
     top: auto;
     right: auto;
     bottom: 14%;
@@ -1321,7 +1285,7 @@ a:focus-visible {
     --container-padding: 20px;
   }
 
-  .hero::before {
+  .hero::after {
     left: 0.75rem;
   }
 
