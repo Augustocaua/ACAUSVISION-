@@ -385,17 +385,11 @@ a:focus-visible {
 
 .hero::after {
   position: absolute;
-  top: clamp(5rem, 12vw, 10rem);
-  right: clamp(-1rem, 10vw, 5rem);
-  z-index: 0;
-  color: rgba(255, 255, 255, 0.05);
-  font-family: var(--font-display);
-  font-size: var(--fs-hero);
-  font-weight: 700;
-  line-height: 0.86;
-  letter-spacing: -0.08em;
-  text-transform: uppercase;
-  content: "ACAUS";
+  inset: auto 0 0;
+  z-index: 1;
+  height: 10rem;
+  background: linear-gradient(180deg, transparent, rgba(9, 9, 9, 0.45));
+  content: "";
   pointer-events: none;
 }
 
@@ -452,15 +446,6 @@ a:focus-visible {
   pointer-events: none;
 }
 
-.hero-canvas::after {
-  position: absolute;
-  inset: auto 0 0;
-  height: 10rem;
-  background: linear-gradient(180deg, transparent, rgba(9, 9, 9, 0.45));
-  content: "";
-  pointer-events: none;
-}
-
 .hero .section-inner {
   position: relative;
   z-index: 2;
@@ -477,21 +462,6 @@ a:focus-visible {
 
 .hero-content {
   max-width: 64rem;
-}
-
-.hero-brand {
-  display: inline-flex;
-  align-items: center;
-  width: min(16.5rem, 58vw);
-  max-width: 100%;
-  margin-bottom: clamp(2rem, 4vw, 3rem);
-}
-
-.hero-brand img {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: brightness(0) invert(1);
 }
 
 .eyebrow,
@@ -1232,19 +1202,6 @@ a:focus-visible {
     padding: clamp(1.25rem, 5vw, 2rem) 0 clamp(3rem, 6vw, 4rem);
   }
 
-  .hero-brand {
-    width: clamp(7rem, 28vw, 10rem);
-    margin-bottom: clamp(1.25rem, 4vw, 1.75rem);
-  }
-
-  .hero::after {
-    top: auto;
-    right: auto;
-    bottom: 14%;
-    left: 1rem;
-    font-size: clamp(4.5rem, 28vw, 8rem);
-  }
-
   .hero-copy .btn {
     width: 100%;
   }
@@ -1283,10 +1240,6 @@ a:focus-visible {
 @media (max-width: 479px) {
   :root {
     --container-padding: 20px;
-  }
-
-  .hero::after {
-    left: 0.75rem;
   }
 
   .mobile-panel {
